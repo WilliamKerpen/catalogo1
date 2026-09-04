@@ -4,7 +4,6 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0d0d0d",
-    paddingTop: 70, // espaço para o TopBar fixo
     paddingHorizontal: 15,
   },
 

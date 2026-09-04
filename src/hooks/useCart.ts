@@ -1,159 +1,92 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+
+import {
+  addToCart as addToCartAction,
+  removeFromCart as removeFromCartAction,
+  increaseQuantity as increaseQuantityAction,
+  decreaseQuantity as decreaseQuantityAction,
+  clearCart as clearCartAction,
+  setCart,
+} from "../redux/slices/cartSlice";
+
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 export default function useCart() {
-  const [cart, setCart] = useState([]);
+  const dispatch = useAppDispatch();
 
-  // Carrega o carrinho
-  async function loadCart() {
-    try {
-      const saved = await AsyncStorage.getItem("cart");
+  const cart = useAppSelector((state) => state.cart.items);
 
-      if (!saved) {
-        setCart([]);
-        return;
-      }
-
-      const parsed = JSON.parse(saved);
-
-      const updatedCart = [];
-
-      for (const item of parsed) {
-        try {
-          const res = await axios.get(
-            `https://dummyjson.com/products/${item.id}`
-          );
-
-          updatedCart.push({
-            id: item.id,
-            quantity: item.quantity,
-            title: res.data.title,
-            price: res.data.price,
-            thumbnail: res.data.thumbnail,
-          });
-        } catch (error) {
-          // Se estiver offline, mantém os dados salvos
-          updatedCart.push(item);
-        }
-      }
-
-      setCart(updatedCart);
-    } catch (error) {
-      console.log("Erro ao carregar carrinho:", error);
-      setCart([]);
-    }
-  }
-
-  // Carrega o carrinho quando o hook é iniciado
+  // Carrega o carrinho salvo no AsyncStorage
   useEffect(() => {
-    loadCart();
-  }, []);
+    async function loadSavedCart() {
+      try {
+        const saved = await AsyncStorage.getItem("cart");
 
-  // Salva carrinho
-  async function saveCart(newCart) {
-    try {
-      const minimal = newCart.map((item) => ({
-        id: item.id,
-        quantity: item.quantity,
-      }));
+        if (saved) {
+          const parsed = JSON.parse(saved);
 
-      await AsyncStorage.setItem(
-        "cart",
-        JSON.stringify(minimal)
-      );
-
-      setCart(newCart);
-    } catch (error) {
-      console.log("Erro ao salvar carrinho:", error);
-    }
-  }
-
-  // Adicionar produto
-  async function addToCart(product) {
-    const exists = cart.find(
-      (item) => item.id === product.id
-    );
-
-    if (exists) {
-      increaseQuantity(product.id);
-      return;
+          dispatch(setCart(parsed));
+        }
+      } catch (error) {
+        console.log("Erro ao carregar carrinho:", error);
+      }
     }
 
-    try {
-      const res = await axios.get(
-        `https://dummyjson.com/products/${product.id}`
-      );
+    loadSavedCart();
+  }, [dispatch]);
 
-      const newItem = {
+  // Salva o carrinho no AsyncStorage sempre que ele mudar
+  useEffect(() => {
+    async function saveCart() {
+      try {
+        await AsyncStorage.setItem(
+          "cart",
+          JSON.stringify(cart)
+        );
+      } catch (error) {
+        console.log("Erro ao salvar carrinho:", error);
+      }
+    }
+
+    saveCart();
+  }, [cart]);
+
+  function addProductToCart(product: any) {
+    dispatch(
+      addToCartAction({
         id: product.id,
         quantity: 1,
-        title: res.data.title,
-        price: res.data.price,
-        thumbnail: res.data.thumbnail,
-      };
-
-      await saveCart([...cart, newItem]);
-
-    } catch (error) {
-      console.log("Erro ao adicionar ao carrinho:", error);
-    }
-  }
-
-  // Remover produto
-  function removeFromCart(id) {
-    const newCart = cart.filter(
-      (item) => item.id !== id
+        title: product.title,
+        price: product.price,
+        thumbnail: product.thumbnail,
+      })
     );
-
-    saveCart(newCart);
   }
 
-  // Aumentar quantidade
-  function increaseQuantity(id) {
-    const newCart = cart.map((item) =>
-      item.id === id
-        ? {
-            ...item,
-            quantity: item.quantity + 1,
-          }
-        : item
-    );
-
-    saveCart(newCart);
+  function removeFromCart(id: number) {
+    dispatch(removeFromCartAction(id));
   }
 
-  // Diminuir quantidade
-  function decreaseQuantity(id) {
-    const newCart = cart
-      .map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              quantity: Math.max(
-                1,
-                item.quantity - 1
-              ),
-            }
-          : item
-      )
-      .filter((item) => item.quantity > 0);
-
-    saveCart(newCart);
+  function increaseQuantity(id: number) {
+    dispatch(increaseQuantityAction(id));
   }
 
-  // Limpar carrinho
+  function decreaseQuantity(id: number) {
+    dispatch(decreaseQuantityAction(id));
+  }
+
   function clearCart() {
-    saveCart([]);
+    dispatch(clearCartAction());
   }
 
   return {
     cart,
-    addToCart,
+    addToCart: addProductToCart,
     removeFromCart,
     increaseQuantity,
     decreaseQuantity,
     clearCart,
-    loadCart,
   };
 }
+

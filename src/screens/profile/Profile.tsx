@@ -10,31 +10,45 @@ export default function Profile({ navigation }) {
   const { getUserById } = useUserService();
 
   useEffect(() => {
-    async function loadUser() {
+  async function loadUser() {
+    try {
       const data = await AsyncStorage.getItem("user");
-      if (!data) return;
+
+      if (!data) {
+        console.log("Nenhum usuário encontrado no AsyncStorage");
+        return;
+      }
 
       const parsed = JSON.parse(data);
 
-      // Visitante  é detectado apenas pela ausência de ID
+      console.log("Usuário salvo:", parsed);
+
+      // Visitante
       if (!parsed.id) {
         setUser(parsed);
         return;
       }
 
-      // Usuário real → buscar no banco
+      // Usuário cadastrado
       const result = await getUserById(parsed.id);
+
+      console.log("Resultado da busca no SQLite:", result);
 
       if (result.ok) {
         setUser(result.user);
       } else {
-        // fallback: usa dados do AsyncStorage
+        // Caso o usuário não seja encontrado no SQLite,
+        // utiliza os dados armazenados no AsyncStorage.
         setUser(parsed);
       }
-    }
 
-    loadUser();
-  }, []);
+    } catch (error) {
+      console.log("Erro ao carregar perfil:", error);
+    }
+  }
+
+  loadUser();
+}, []);
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("user");

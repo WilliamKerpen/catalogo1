@@ -9,7 +9,7 @@ export default function Favorites({ navigation }) {
   
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#0d0d0d", paddingTop: 70 }}>
+    <View style={{ flex: 1, backgroundColor: "#0d0d0d"}}>
       {/* Barra superior fixa */}
       <TopBar favoritesCount={favorites.length}/>
 

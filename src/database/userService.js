@@ -41,14 +41,18 @@ export function useUserService() {
       return { ok: true };
     } catch (error) {
       console.log("Erro ao cadastrar usuário:", error);
-      return { ok: false, error };
+
+      return {
+        ok: false,
+        error,
+      };
     }
   }
 
   /**
    * Login do usuário
-   * - Busca usuário pelo email e senha (hash)
-   * - Retorna o usuário se encontrado
+   * - Busca usuário pelo email e senha
+   * - Retorna os dados do usuário encontrado
    */
   async function loginUsuario(email, senha) {
     const senhaHash = gerarHash(senha);
@@ -61,13 +65,57 @@ export function useUserService() {
       );
 
       if (rows.length > 0) {
-        return { ok: true, user: rows[0] };
+        return {
+          ok: true,
+          user: rows[0],
+        };
       }
 
-      return { ok: false, user: null };
+      return {
+        ok: false,
+        user: null,
+      };
     } catch (error) {
       console.log("Erro no login:", error);
-      return { ok: false, user: null };
+
+      return {
+        ok: false,
+        user: null,
+      };
+    }
+  }
+
+  /**
+   * Buscar usuário pelo ID
+   *
+   * Essa função é utilizada pelo Profile.
+   */
+  async function getUserById(id) {
+    try {
+      const user = await db.getFirstAsync(
+        "SELECT * FROM users WHERE id = ?",
+        [id]
+      );
+
+      if (user) {
+        return {
+          ok: true,
+          user,
+        };
+      }
+
+      return {
+        ok: false,
+        user: null,
+      };
+    } catch (error) {
+      console.log("Erro ao buscar usuário pelo ID:", error);
+
+      return {
+        ok: false,
+        user: null,
+        error,
+      };
     }
   }
 
@@ -82,10 +130,15 @@ export function useUserService() {
         [nome, email, foto, id]
       );
 
-      return { ok: true };
+      return {
+        ok: true,
+      };
     } catch (error) {
       console.log("Erro ao atualizar usuário:", error);
-      return { ok: false };
+
+      return {
+        ok: false,
+      };
     }
   }
 
@@ -93,6 +146,7 @@ export function useUserService() {
   return {
     cadastrarUsuario,
     loginUsuario,
+    getUserById,
     atualizarUsuario,
   };
 }

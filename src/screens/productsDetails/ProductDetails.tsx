@@ -37,17 +37,17 @@ export default function ProductDetails({ route }) {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.loadingContent}>
         <ActivityIndicator size="large" color="#e50914" />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#0d0d0d", paddingTop: 70 }}>
+    <View style={styles.container}>
       <TopBar favoritesCount={favorites.length} cartCount={cart.length} />
-
-      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 30 }}>
+    
+      <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 30 }}>
         
         {/* Imagem principal */}
         <View style={{ position: "relative" }}>

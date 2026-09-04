@@ -1,14 +1,21 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  container: {
+    container: {
+    flex: 1,
+    backgroundColor: "#0d0d0d",
+    paddingHorizontal: 10,
+    
+  },
+  
+  content: {
     flex: 1,
     backgroundColor: "#0d0d0d",
     paddingHorizontal: 15,
     paddingTop: 10, // espaço interno para o conteúdo não colar no topo
   },
 
-  loadingContainer: {
+  loadingContent: {
     flex: 1,
     backgroundColor: "#0d0d0d",
     justifyContent: "center",

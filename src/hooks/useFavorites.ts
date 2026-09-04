@@ -1,68 +1,78 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import {
+  toggleFavorite as toggleFavoriteAction,
+  setFavorites,
+} from "../redux/slices/favoritesSlice";
+
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../redux/hooks";
+
 export default function useFavorites() {
-  const [favorites, setFavorites] = useState([]);
+  const dispatch = useAppDispatch();
 
-  // Função responsável por carregar os favoritos
-  async function loadFavorites() {
-    try {
-      const saved = await AsyncStorage.getItem("favorites");
+  // Pega os favoritos diretamente do Redux
+  const favorites = useAppSelector(
+    (state) => state.favorites.items
+  );
 
-      if (saved) {
-        setFavorites(JSON.parse(saved));
-      } else {
-        setFavorites([]);
-      }
-    } catch (error) {
-      console.log("Erro ao carregar favoritos:", error);
-    }
-  }
-
-  // Carrega ao iniciar
+  // Carrega os favoritos salvos quando o hook é iniciado
   useEffect(() => {
-    loadFavorites();
-  }, []);
+    async function loadSavedFavorites() {
+      try {
+        const saved = await AsyncStorage.getItem("favorites");
 
-  // Salva favoritos
-  async function save(newList) {
-    try {
-      await AsyncStorage.setItem(
-        "favorites",
-        JSON.stringify(newList)
-      );
+        if (saved) {
+          const parsed = JSON.parse(saved);
 
-      // Atualiza imediatamente o estado deste componente
-      setFavorites(newList);
-    } catch (error) {
-      console.log("Erro ao salvar favoritos:", error);
+          dispatch(setFavorites(parsed));
+        }
+      } catch (error) {
+        console.log(
+          "Erro ao carregar favoritos:",
+          error
+        );
+      }
     }
-  }
 
-  // Adicionar/remover favorito
-  function toggleFavorite(product) {
-    const exists = favorites.find(
-      (f) => f.id === product.id
+    loadSavedFavorites();
+  }, [dispatch]);
+
+  // Salva automaticamente sempre que os favoritos mudarem
+  useEffect(() => {
+    async function saveFavorites() {
+      try {
+        await AsyncStorage.setItem(
+          "favorites",
+          JSON.stringify(favorites)
+        );
+      } catch (error) {
+        console.log(
+          "Erro ao salvar favoritos:",
+          error
+        );
+      }
+    }
+
+    saveFavorites();
+  }, [favorites]);
+
+  // Adiciona ou remove um favorito
+  function toggleFavorite(product: any) {
+    dispatch(
+      toggleFavoriteAction({
+        ...product,
+      })
     );
-
-    if (exists) {
-      const newList = favorites.filter(
-        (f) => f.id !== product.id
-      );
-
-      save(newList);
-      return;
-    }
-
-    const newList = [...favorites, product];
-
-    save(newList);
   }
 
-  // Verificar se é favorito
-  function isFavorite(id) {
+  // Verifica se determinado produto está nos favoritos
+  function isFavorite(id: number) {
     return favorites.some(
-      (f) => f.id === id
+      (favorite) => favorite.id === id
     );
   }
 
@@ -70,6 +80,6 @@ export default function useFavorites() {
     favorites,
     toggleFavorite,
     isFavorite,
-    loadFavorites,
   };
 }
+
