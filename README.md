@@ -186,16 +186,6 @@ Cadastro
 ![Tela de perfil usuario](./docs/screenshots/perfilUsuario.png)
 
 
-
-### Métricas
-
-- Proposta: Prometheus + Grafana
-- HPA baseado em CPU
-
-### Tracing
-
-- Proposta: OpenTelemetry + Jaeger
-
 ---
 
 ## Estrutura do projeto
