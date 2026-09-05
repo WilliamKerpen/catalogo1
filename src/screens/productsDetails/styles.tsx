@@ -12,7 +12,6 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: "#0d0d0d",
     paddingHorizontal: 15,
-    paddingTop: 10, // espaço interno para o conteúdo não colar no topo
   },
 
   loadingContent: {

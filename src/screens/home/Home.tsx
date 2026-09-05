@@ -2,17 +2,15 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import styles from "./styles";
 import TopBar from "../../components/TopBar/TopBar";
-import useFavorites from "../../hooks/useFavorites";
-import useCart from "../../hooks/useCart";
+
 
 
 export default function Home({ navigation }) {
-  const { favorites } = useFavorites();
-  const { cart } = useCart();
+
   return (
     <View style={styles.container}>
       {/* Barra superior fixa */}
-      <TopBar favoritesCount={favorites.length} cartCount={cart.length} />
+      <TopBar />
 
       {/* Conteúdo central da Home */}
       <View style={styles.content}>

@@ -57,11 +57,11 @@ export default function ProfileImagePicker({ onChange, initialImage }) {
       />
 
       <TouchableOpacity onPress={pickImage}>
-        <Text style={{ color: "#ccc", marginTop: 10 }}>Escolher da galeria</Text>
+        <Text style={{ color: "#ccc", marginTop: 30, fontSize: 16 }}>Escolher da galeria</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={takePhoto}>
-        <Text style={{ color: "#ccc", marginTop: 10 }}>Tirar foto</Text>
+        <Text style={{ color: "#ccc", marginTop: 20, fontSize: 16 }}>Tirar foto</Text>
       </TouchableOpacity>
     </View>
   );

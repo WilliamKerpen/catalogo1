@@ -18,8 +18,10 @@ export default StyleSheet.create({
     color: "#fff",
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 25,
+    marginBottom: 30,
+    textAlign: "center",
   },
+
   input: {
     backgroundColor: "#1a1a1a",
     borderRadius: 8,

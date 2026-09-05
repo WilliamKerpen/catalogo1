@@ -16,7 +16,7 @@ export default function Login({ navigation }) {
 
   const { loginUsuario } = useUserService();
 
-  // 🔥 Função de login normal
+  // Função de login normal
   const handleLogin = async () => {
     if (!email || !senha) {
       alert("Preencha todos os campos");
@@ -28,14 +28,14 @@ export default function Login({ navigation }) {
     if (result.ok) {
       await AsyncStorage.setItem("user", JSON.stringify(result.user));
 
-      // 🔥 Reset para evitar voltar para login
+      // Reset para evitar voltar para login
       navigation.reset({ index: 0, routes: [{ name: "Home" }] });
     } else {
       alert("Email ou senha incorretos");
     }
   };
 
-  // 🔥 Login como visitante
+  // Login como visitante
   const entrarComoVisitante = async () => {
     const visitante = {
       id: null,
@@ -66,7 +66,7 @@ export default function Login({ navigation }) {
             style={styles.logo}
           />
 
-          <Text style={styles.title}>Login</Text>
+          <Text style={styles.title}>Bem Vindo ao seu App de Catálogo !</Text>
 
           {/* INPUT EMAIL */}
           <TextInput

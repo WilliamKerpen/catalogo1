@@ -17,8 +17,7 @@ export default function ProductDetails({ route }) {
 
   const { toggleFavorite, isFavorite } = useFavorites();
   const { addToCart } = useCart();
-  const { favorites } = useFavorites();
-  const { cart } = useCart();
+  
 
   
 
@@ -45,9 +44,9 @@ export default function ProductDetails({ route }) {
 
   return (
     <View style={styles.container}>
-      <TopBar favoritesCount={favorites.length} cartCount={cart.length} />
+      <TopBar />
     
-      <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 30 }}>
+      <ScrollView style={styles.content}>
         
         {/* Imagem principal */}
         <View style={{ position: "relative" }}>

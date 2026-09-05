@@ -17,74 +17,79 @@ const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
-    // NavigationContainer deve envolver TODA a navegação
     <NavigationContainer>
 
-      {/* Stack principal */}
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#000",
+          },
 
-        {/* Tela de Login */}
+          headerTintColor: "#fff",
+
+          headerTitleStyle: {
+            color: "#fff",
+            fontWeight: "bold",
+            fontSize: 20,
+          },
+
+          headerShadowVisible: false,
+        }}
+      >
+
         <Stack.Screen
           name="Login"
           component={Login}
           options={{ headerShown: false }}
         />
 
-        {/* Tela pós-login */}
         <Stack.Screen
           name="Home"
           component={Home}
           options={{ headerShown: false }}
         />
 
-        {/* Tela de Cadastro */}
-
         <Stack.Screen
           name="Register"
           component={Register}
-          options={{ title: 'Cadastro' }}
-        />   
+          options={{ title: "Cadastro" }}
+        />
 
-
-        {/* Lista filtrada */}
         <Stack.Screen
           name="FilteredProducts"
           component={FilteredProducts}
-          options={{ title: 'Produtos' }}
+          options={{ title: "Produtos" }}
         />
 
-        {/* Detalhes */}
         <Stack.Screen
           name="ProductDetails"
           component={ProductDetails}
-          options={{ title: 'Detalhes do Produto' }}
+          options={{ title: "Detalhes do Produto" }}
         />
 
-        {/* Favoritos */}
         <Stack.Screen
           name="Favorites"
           component={Favorites}
         />
 
-        {/* Carrinho */}
         <Stack.Screen
           name="Cart"
           component={Cart}
         />
 
-        {/* Perfil */}
         <Stack.Screen
           name="Profile"
           component={Profile}
         />
 
-        {/* Editar Perfil */}
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
         />
 
       </Stack.Navigator>
+
     </NavigationContainer>
   );
 }
